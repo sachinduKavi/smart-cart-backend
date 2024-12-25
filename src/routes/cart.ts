@@ -5,7 +5,7 @@ import { checkSecretKey } from '../middleware/authentication'
 import { initializeCart } from '../controller/cart'
 
 
-router.post('initialize', checkSecretKey, initializeCart)
+router.post('/initialize/:cartID', checkSecretKey, initializeCart)
 
 
 

@@ -3,11 +3,11 @@ import { Request, Response } from "express";
 
 
 // Initialize the cart for session 
-const initializeCart = (req: Request, res: Response) => {
+const initializeCart = async (req: Request, res: Response) => {
     // Process variables
-    let proceed = false, content = null, message = null, status = 200
+    let proceed = true, content = null, message = null, status = 200
 
-
+    console.log('Cart Initializing', req.params.cartID)
 
     res.status(201).json({
         proceed: proceed,
