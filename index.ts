@@ -27,18 +27,29 @@ app.use(express.urlencoded({ extended: true }));
 // Client request
 app.use('/cart', cartRouter)
 
+// Clear all the sockets
+app.get('/clearSockets', async (req: Request, res: Response) => {
+    for (const [id, socket] of io.sockets.sockets) {
+        socket.disconnect(true); // Forcefully disconnect the socket
+        console.log(`Socket disconnected: ${id}`);
+    }
+
+    res.send('All sockets have been cleared');
+} )
+
+
 
 
 // Handel client connection
 io.on('connection', async (socket: Socket) => {
-    console.log('Connected to socket:', socket.id)
+    const cartID: string = socket.handshake.query.cartID?.toString() || ""
+    console.log('Connection establish between', cartID, 'and', socket.id)
 
-
-    socket.on('message', (data) => {
+    socket.on(cartID, (data) => {
         console.log(`Message from ${socket.id}`, data)
 
         // Respond to the client
-        socket.emit('response', { message: 'Message received on the server!' });
+        socket.emit(cartID, { message: 'Message received on the server!' });
     })
 
 

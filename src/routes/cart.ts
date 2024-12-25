@@ -5,8 +5,10 @@ import { checkSecretKey } from '../middleware/authentication'
 import { initializeCart } from '../controller/cart'
 
 
-router.post('/initialize/:cartID', checkSecretKey, initializeCart)
+router.get('/initialize/:cartID', checkSecretKey, initializeCart)
 
+
+router.get('/clearAllSockets', )
 
 
 export default router
