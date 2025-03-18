@@ -17,6 +17,20 @@ const initializeCart = async (req: Request, res: Response) => {
 }
 
 
+const testCart = async (req: Request, res: Response) => {
+    // Process variables
+    let proceed = true, content = null, message = null, status = 201
+
+    console.log('Running test function...')
+
+    res.status(status).json({
+        proceed: proceed,
+        content: content,
+        message: message
+    })
+}
+
+
 const clearSockets = async (req: Request, res: Response) => {
     // Process variables
     let proceed = true, content = null, message = null, status = 201
@@ -31,5 +45,6 @@ const clearSockets = async (req: Request, res: Response) => {
 
 
 export {
-    initializeCart
+    initializeCart,
+    testCart
 }

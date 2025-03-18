@@ -2,13 +2,13 @@ import express from 'express'
 const router = express.Router()
 
 import { checkSecretKey } from '../middleware/authentication'
-import { initializeCart } from '../controller/cart'
+import { initializeCart, testCart } from '../controller/cart'
 
 
 router.get('/initialize/:cartID', checkSecretKey, initializeCart)
 
 
-router.get('/clearAllSockets', )
+router.get('/testCart', testCart)
 
 
 export default router
