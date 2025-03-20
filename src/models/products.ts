@@ -8,22 +8,16 @@ interface ProductInterface{
 
 const product_list: Array<ProductInterface> = [
     {
-        id: 1,
-        name: "Chello Drinking yogurt",
-        unit_price: 180,
+        id: 'cb1234',
+        name: "Cheese Buttons Biscuits",
+        unit_price: 50,
         description: "This is product 1"
     },
     {
-        id: 2,
-        name: "Cheese Buttons",
-        unit_price: 100,
-        description: "This is product 2"
-    },
-    {
-        id: 3,
+        id: 'mdjam1234',
         name: "MD Jam Strawberry",
-        unit_price: 480,
-        description: "This is product 3"
+        unit_price: 320,
+        description: "This is product 2"
     }
 ]
 
