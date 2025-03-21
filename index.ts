@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
+import { ProductInterface, product_list, BillInterface } from './src/models/products';
 
 const app = express()
 const httpServer = createServer(app)
@@ -40,14 +41,25 @@ app.get('/clearSockets', async (req: Request, res: Response) => {
 
 
 
+
+
 // Handel client connection
 io.on('connection', async (socket: Socket) => {
     const cartID: string = socket.handshake.query.cartID?.toString() || ""
+    let customerBill: BillInterface = {
+        item_list: [],
+        total: 0
+    }
     console.log('Connection establish between', cartID, 'and', socket.id)
 
     socket.on(cartID, (data) => {
-        console.log(`Message from ${socket.id}`, data)
-
+        console.log(`Message To ${cartID}`, data)
+        console.log(data)
+        
+        // if(data.sender === 'cart') {
+        //     const product = product_list.find(product => product.id === receivedData.detected)
+        //     console.log('Product:', product)
+        // }
         // Respond to the client
         socket.emit(cartID, { message: 'Message received on the server!' });
     })
