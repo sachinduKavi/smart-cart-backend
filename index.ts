@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import { ProductInterface, product_list, BillInterface } from './src/models/products';
+import { calculateTotalPrice } from './src/middleware/calculations';
 
 const app = express()
 const httpServer = createServer(app)
@@ -54,14 +55,33 @@ io.on('connection', async (socket: Socket) => {
 
     socket.on(cartID, (data) => {
         console.log(`Message To ${cartID}`, data)
-        console.log(data)
-        
-        // if(data.sender === 'cart') {
-        //     const product = product_list.find(product => product.id === receivedData.detected)
-        //     console.log('Product:', product)
-        // }
+        console.log(data.item)
+        if(data.sender === 'cart') { // Item send from the cart
+            const product:ProductInterface | boolean = product_list.find(product => product.id === data.item) || false
+            console.log('Product:', product)
+
+            if(product) {
+            // Check the item exists in the customer bill
+                const itemIndex = customerBill.item_list.findIndex(item => item.id === data.item)
+                if(itemIndex < 0) { // Item dose not exist in the bill
+                    // Add the item to the bill
+                    customerBill.item_list.push({
+                        ...product,
+                        quantity: 1
+                    })
+                } else {
+                    // Update the quantity of the item
+                    customerBill.item_list[itemIndex].quantity += 1
+                }
+            }
+
+            // Calculate the total price
+            customerBill.total = calculateTotalPrice(customerBill.item_list)
+        }
+
+        console.log('Customer Bill:', customerBill)
         // Respond to the client
-        socket.emit(cartID, { message: 'Message received on the server!' });
+        socket.emit(cartID, { message: 'Message received on the server!', bill: customerBill});
     })
 
 
