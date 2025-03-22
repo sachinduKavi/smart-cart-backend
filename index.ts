@@ -42,15 +42,15 @@ app.get('/clearSockets', async (req: Request, res: Response) => {
 
 
 
-
+let customerBill: BillInterface = {
+    item_list: [],
+    total: 0
+}
 
 // Handel client connection
 io.on('connection', async (socket: Socket) => {
     const cartID: string = socket.handshake.query.cartID?.toString() || ""
-    let customerBill: BillInterface = {
-        item_list: [],
-        total: 0
-    }
+    
     console.log('Connection establish between', cartID, 'and', socket.id)
 
     socket.on(cartID, (data) => {
@@ -71,7 +71,18 @@ io.on('connection', async (socket: Socket) => {
                     })
                 } else {
                     // Update the quantity of the item
-                    customerBill.item_list[itemIndex].quantity += 1
+                    if(data.direction === 0) { // Increase the quantity
+                        customerBill.item_list[itemIndex].quantity += 1
+                    } else { // Decrease the quantity
+                        if(customerBill.item_list[itemIndex].quantity > 1) {
+                            customerBill.item_list[itemIndex].quantity -= 1
+                        } else {
+                            // Remove the item from the bill
+                            customerBill.item_list.splice(itemIndex, 1)
+                        }
+
+                    }
+                    
                 }
             }
 
@@ -81,7 +92,7 @@ io.on('connection', async (socket: Socket) => {
 
         console.log('Customer Bill:', customerBill)
         // Respond to the client
-        socket.emit(cartID, { message: 'Message received on the server!', bill: customerBill});
+        socket.broadcast.emit(cartID, JSON.stringify({ message: 'Message received on the server!', bill: customerBill}));
     })
 
 
